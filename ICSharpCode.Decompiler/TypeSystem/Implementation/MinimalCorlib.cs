@@ -146,7 +146,9 @@ namespace ICSharpCode.Decompiler.TypeSystem.Implementation
 			{
 				this.corlib = corlib;
 				this.typeCode = typeCode;
-				this.typeKind = KnownTypeReference.Get(typeCode).typeKind;
+				KnownTypeReference ktr = KnownTypeReference.Get(typeCode);
+				this.typeKind = ktr.typeKind;
+				this.MetadataName = ktr.Name + (ktr.TypeParameterCount > 0 ? "`" + ktr.TypeParameterCount : "");
 			}
 
 			IReadOnlyList<ITypeDefinition> ITypeDefinition.NestedTypes => EmptyList<ITypeDefinition>.Instance;
@@ -161,6 +163,8 @@ namespace ICSharpCode.Decompiler.TypeSystem.Implementation
 			IType ITypeDefinition.EnumUnderlyingType => SpecialType.UnknownType;
 
 			public FullTypeName FullTypeName => KnownTypeReference.Get(typeCode).TypeName;
+
+			public string MetadataName { get; }
 
 			ITypeDefinition IEntity.DeclaringTypeDefinition => null;
 			IType ITypeDefinition.DeclaringType => null;
